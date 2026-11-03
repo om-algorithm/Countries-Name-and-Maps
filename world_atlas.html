@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#10172a">
+<title>World Atlas — Countries & Flags</title>
+<style>
+:root{--bg:#0b1020;--panel:rgba(20,29,53,.82);--text:#f4f7ff;--muted:#9eabc7;--accent:#75e0c1;--line:rgba(255,255,255,.1)}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,Arial,sans-serif;background:radial-gradient(ellipse at 15% 5%,#243b69 0,transparent 36%),radial-gradient(ellipse at 90% 25%,#164d56 0,transparent 30%),linear-gradient(145deg,#080d1b,#111a31 55%,#0b1020);}
+header{padding:56px 20px 34px;text-align:center;position:relative;overflow:hidden}
+.eyebrow{display:inline-block;padding:7px 13px;border:1px solid #ffffff24;border-radius:30px;color:var(--accent);font-size:12px;letter-spacing:2px;text-transform:uppercase;background:#ffffff09}
+h1{font-size:clamp(36px,7vw,66px);line-height:1.05;margin:18px 0 12px;letter-spacing:-2px}
+h1 span{color:var(--accent)}
+.subtitle{color:var(--muted);font-size:16px;margin:0 auto;max-width:560px;line-height:1.6}
+.wrap{width:min(1100px,calc(100% - 32px));margin:0 auto 60px}
+.toolbar{background:var(--panel);border:1px solid var(--line);border-radius:22px;padding:18px;backdrop-filter:blur(16px);box-shadow:0 18px 50px #0004;position:relative;z-index:1}
+.searchbox{display:flex;align-items:center;gap:12px;background:#080e1d;border:1px solid #ffffff1c;border-radius:14px;padding:0 16px}
+.searchbox span{font-size:20px;color:var(--accent)}
+input{width:100%;padding:16px 0;background:transparent;border:0;outline:0;color:white;font-size:16px}
+input::placeholder{color:#7886a5}
+.meta{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:15px;flex-wrap:wrap;color:var(--muted);font-size:13px}
+#count{color:var(--accent);font-weight:700}
+.alphabet{display:flex;gap:6px;flex-wrap:wrap;margin-top:16px}
+.alphabet button{border:1px solid var(--line);background:#ffffff08;color:#c4cee3;border-radius:8px;padding:7px 10px;cursor:pointer;font-weight:650;font-size:12px;transition:.2s}
+.alphabet button:hover,.alphabet button.active{background:var(--accent);color:#07131a;border-color:var(--accent)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:13px;margin-top:22px}
+.card{display:flex;align-items:center;gap:14px;padding:17px;background:linear-gradient(135deg,#18233eeb,#111a30eb);border:1px solid var(--line);border-radius:16px;min-height:82px;transition:transform .2s,border-color .2s,background .2s}
+.card:hover{transform:translateY(-3px);border-color:#75e0c177;background:linear-gradient(135deg,#203352,#14243a)}
+.flag{font-size:34px;line-height:1;filter:drop-shadow(0 4px 5px #0005);width:42px;text-align:center;flex-shrink:0}
+.name{font-weight:650;font-size:14px;line-height:1.35}
+.code{font-size:11px;color:var(--muted);margin-top:5px;letter-spacing:1.2px}
+.empty{grid-column:1/-1;text-align:center;padding:55px 15px;color:var(--muted);background:#ffffff08;border:1px dashed var(--line);border-radius:16px}
+footer{text-align:center;color:#7f8ba7;font-size:12px;padding:5px 20px 35px}
+@media(max-width:520px){header{padding-top:42px}.wrap{width:calc(100% - 22px)}.toolbar{padding:13px}.grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.card{padding:12px;gap:9px;min-height:76px}.flag{font-size:28px;width:32px}.name{font-size:12px}.alphabet{gap:5px}.alphabet button{padding:6px 8px}}
+</style>
+</head>
+<body>
+<header>
+  <div class="eyebrow">Explore our planet</div>
+  <h1>The World <span>Atlas</span></h1>
+  <p class="subtitle">A beautiful, searchable collection of countries and their flags. Find a country in seconds.</p>
+</header>
+<main class="wrap">
+  <section class="toolbar">
+    <label class="searchbox"><span>⌕</span><input id="search" type="search" placeholder="Search any country..." autocomplete="off" aria-label="Search countries"></label>
+    <div class="meta"><span id="count">195 countries</span><span>Browse alphabetically · Select a letter</span></div>
+    <nav class="alphabet" id="alphabet" aria-label="Filter by first letter"></nav>
+  </section>
+  <section class="grid" id="grid" aria-live="polite"></section>
+</main>
+<footer>WORLD ATLAS · Country names and flag emojis · Works offline in your browser</footer>
+<script>
+const countries = [["Afghanistan", "AF"], ["Albania", "AL"], ["Algeria", "DZ"], ["Andorra", "AD"], ["Angola", "AO"], ["Antigua and Barbuda", "AG"], ["Argentina", "AR"], ["Armenia", "AM"], ["Australia", "AU"], ["Austria", "AT"], ["Azerbaijan", "AZ"], ["Bahamas", "BS"], ["Bahrain", "BH"], ["Bangladesh", "BD"], ["Barbados", "BB"], ["Belarus", "BY"], ["Belgium", "BE"], ["Belize", "BZ"], ["Benin", "BJ"], ["Bhutan", "BT"], ["Bolivia", "BO"], ["Bosnia and Herzegovina", "BA"], ["Botswana", "BW"], ["Brazil", "BR"], ["Brunei", "BN"], ["Bulgaria", "BG"], ["Burkina Faso", "BF"], ["Burundi", "BI"], ["Cabo Verde", "CV"], ["Cambodia", "KH"], ["Cameroon", "CM"], ["Canada", "CA"], ["Central African Republic", "CF"], ["Chad", "TD"], ["Chile", "CL"], ["China", "CN"], ["Colombia", "CO"], ["Comoros", "KM"], ["Congo (Republic of the)", "CG"], ["Costa Rica", "CR"], ["Côte d’Ivoire", "CI"], ["Croatia", "HR"], ["Cuba", "CU"], ["Cyprus", "CY"], ["Czechia", "CZ"], ["Democratic Republic of the Congo", "CD"], ["Denmark", "DK"], ["Djibouti", "DJ"], ["Dominica", "DM"], ["Dominican Republic", "DO"], ["Ecuador", "EC"], ["Egypt", "EG"], ["El Salvador", "SV"], ["Equatorial Guinea", "GQ"], ["Eritrea", "ER"], ["Estonia", "EE"], ["Eswatini", "SZ"], ["Ethiopia", "ET"], ["Fiji", "FJ"], ["Finland", "FI"], ["France", "FR"], ["Gabon", "GA"], ["Gambia", "GM"], ["Georgia", "GE"], ["Germany", "DE"], ["Ghana", "GH"], ["Greece", "GR"], ["Grenada", "GD"], ["Guatemala", "GT"], ["Guinea", "GN"], ["Guinea-Bissau", "GW"], ["Guyana", "GY"], ["Haiti", "HT"], ["Honduras", "HN"], ["Hungary", "HU"], ["Iceland", "IS"], ["India", "IN"], ["Indonesia", "ID"], ["Iran", "IR"], ["Iraq", "IQ"], ["Ireland", "IE"], ["Israel", "IL"], ["Italy", "IT"], ["Jamaica", "JM"], ["Japan", "JP"], ["Jordan", "JO"], ["Kazakhstan", "KZ"], ["Kenya", "KE"], ["Kiribati", "KI"], ["Kuwait", "KW"], ["Kyrgyzstan", "KG"], ["Laos", "LA"], ["Latvia", "LV"], ["Lebanon", "LB"], ["Lesotho", "LS"], ["Liberia", "LR"], ["Libya", "LY"], ["Liechtenstein", "LI"], ["Lithuania", "LT"], ["Luxembourg", "LU"], ["Madagascar", "MG"], ["Malawi", "MW"], ["Malaysia", "MY"], ["Maldives", "MV"], ["Mali", "ML"], ["Malta", "MT"], ["Marshall Islands", "MH"], ["Mauritania", "MR"], ["Mauritius", "MU"], ["Mexico", "MX"], ["Micronesia", "FM"], ["Moldova", "MD"], ["Monaco", "MC"], ["Mongolia", "MN"], ["Montenegro", "ME"], ["Morocco", "MA"], ["Mozambique", "MZ"], ["Myanmar", "MM"], ["Namibia", "NA"], ["Nauru", "NR"], ["Nepal", "NP"], ["Netherlands", "NL"], ["New Zealand", "NZ"], ["Nicaragua", "NI"], ["Niger", "NE"], ["Nigeria", "NG"], ["North Korea", "KP"], ["North Macedonia", "MK"], ["Norway", "NO"], ["Oman", "OM"], ["Pakistan", "PK"], ["Palau", "PW"], ["Palestine", "PS"], ["Panama", "PA"], ["Papua New Guinea", "PG"], ["Paraguay", "PY"], ["Peru", "PE"], ["Philippines", "PH"], ["Poland", "PL"], ["Portugal", "PT"], ["Qatar", "QA"], ["Romania", "RO"], ["Russia", "RU"], ["Rwanda", "RW"], ["Saint Kitts and Nevis", "KN"], ["Saint Lucia", "LC"], ["Saint Vincent and the Grenadines", "VC"], ["Samoa", "WS"], ["San Marino", "SM"], ["Sao Tome and Principe", "ST"], ["Saudi Arabia", "SA"], ["Senegal", "SN"], ["Serbia", "RS"], ["Seychelles", "SC"], ["Sierra Leone", "SL"], ["Singapore", "SG"], ["Slovakia", "SK"], ["Slovenia", "SI"], ["Solomon Islands", "SB"], ["Somalia", "SO"], ["South Africa", "ZA"], ["South Korea", "KR"], ["South Sudan", "SS"], ["Spain", "ES"], ["Sri Lanka", "LK"], ["Sudan", "SD"], ["Suriname", "SR"], ["Sweden", "SE"], ["Switzerland", "CH"], ["Syria", "SY"], ["Tajikistan", "TJ"], ["Tanzania", "TZ"], ["Thailand", "TH"], ["Timor-Leste", "TL"], ["Togo", "TG"], ["Tonga", "TO"], ["Trinidad and Tobago", "TT"], ["Tunisia", "TN"], ["Türkiye", "TR"], ["Turkmenistan", "TM"], ["Tuvalu", "TV"], ["Uganda", "UG"], ["Ukraine", "UA"], ["United Arab Emirates", "AE"], ["United Kingdom", "GB"], ["United States", "US"], ["Uruguay", "UY"], ["Uzbekistan", "UZ"], ["Vanuatu", "VU"], ["Vatican City", "VA"], ["Venezuela", "VE"], ["Vietnam", "VN"], ["Yemen", "YE"], ["Zambia", "ZM"], ["Zimbabwe", "ZW"]];
+const flag = code => String.fromCodePoint(...code.toUpperCase().split('').map(c => 127397 + c.charCodeAt(0)));
+const grid = document.getElementById('grid');
+const search = document.getElementById('search');
+const count = document.getElementById('count');
+const alphabet = document.getElementById('alphabet');
+let selectedLetter = 'ALL';
+const letters = ['ALL', ...'ABCDEFGHIJKLMNOPQRSTUVWXYZ'];
+letters.forEach(letter => {
+  const btn = document.createElement('button');
+  btn.textContent = letter === 'ALL' ? 'All' : letter;
+  if(letter === 'ALL') btn.classList.add('active');
+  btn.addEventListener('click', () => {
+    selectedLetter = letter;
+    alphabet.querySelectorAll('button').forEach(b => b.classList.toggle('active', (b.textContent === 'All' ? 'ALL' : b.textContent) === letter));
+    render();
+  });
+  alphabet.appendChild(btn);
+});
+function render() {
+  const term = search.value.trim().toLocaleLowerCase();
+  const filtered = countries.filter(([name,code]) =>
+    name.toLocaleLowerCase().includes(term) || code.toLowerCase().includes(term)
+  ).filter(([name]) => selectedLetter === 'ALL' || name.toUpperCase().startsWith(selectedLetter));
+  count.textContent = `${filtered.length} of ${countries.length} countries`;
+  grid.innerHTML = '';
+  if(!filtered.length) {
+    grid.innerHTML = '<div class="empty"><div style="font-size:32px;margin-bottom:10px">🌍</div><strong>No countries found</strong><p>Try another spelling or search term.</p></div>';
+    return;
+  }
+  const frag = document.createDocumentFragment();
+  filtered.forEach(([name,code]) => {
+    const card = document.createElement('article');
+    card.className = 'card';
+    const emoji = document.createElement('div'); emoji.className='flag'; emoji.textContent=flag(code); emoji.setAttribute('aria-label', name + ' flag');
+    const info = document.createElement('div');
+    const title = document.createElement('div'); title.className='name'; title.textContent=name;
+    const sub = document.createElement('div'); sub.className='code'; sub.textContent=code;
+    info.append(title,sub); card.append(emoji,info); frag.appendChild(card);
+  });
+  grid.appendChild(frag);
+}
+search.addEventListener('input', render);
+render();
+</script>
+</body>
+</html>
